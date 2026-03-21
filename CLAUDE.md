@@ -159,3 +159,64 @@ When the stakeholder corrects your behavior or expresses frustration
 Do NOT trigger on simple clarifications, new instructions, or questions
 about your reasoning.
 <!-- CLASI:END -->
+
+## Project Identity
+
+This is a **micro:bit V2 MakeCode/PXT extension template** for student
+robotics projects at The League of Amazing Programmers. Students write
+TypeScript (Static TypeScript subset) as the primary language, with C++
+used only for hardware shims that require direct DAL access. The repo is
+structured as a PXT extension that students can import into their own
+MakeCode projects via GitHub URL.
+
+## Build Commands
+
+| Command | What it does |
+|---|---|
+| `make setup` | Install npm deps, pxt CLI, target, and extension deps |
+| `make build` | Compile the project locally (`pxt build`) |
+| `make deploy` | Build and flash to connected micro:bit (`pxt deploy`) |
+| `make test` | Run test files (`pxt test`) |
+| `make serve` | Start the local MakeCode dev server |
+
+All build commands set `PXT_FORCE_LOCAL=1` to use the local compiler.
+
+## pxt.json Rules
+
+`pxt.json` is the project manifest. **Every source file must be
+registered or PXT silently ignores it.**
+
+- Every `.ts` file in `src/` must be listed in the `files` array.
+- Every `.cpp` file must be listed in the `files` array.
+- Every `.ts` file in `test/` must be listed in the `testFiles` array.
+- `src/main.ts` (if it exists) goes in `testFiles`, not `files`, because
+  it is the test entry point.
+- `README.md`, `shims.d.ts`, and `enums.d.ts` go in `files`.
+
+**Creating a file without adding it to `pxt.json` means the file is
+silently ignored by the compiler.** No error, no warning — just missing
+code.
+
+## Deploy Behavior
+
+If the environment variables `BRIDGE_URL` and `BRIDGE_KEY` are set,
+deploy POSTs the compiled `.hex` file to the bridge endpoint. Otherwise,
+`pxt deploy` flashes directly to a USB-connected micro:bit.
+
+## Skill Pointers
+
+- **When writing TypeScript**, consult `.claude/skills/static-typescript/`
+  for language subset rules and disallowed features.
+- **When working with block annotations, C++ shims, namespaces, or
+  extension structure**, consult `.claude/skills/pxt/`.
+
+## What Not to Do
+
+- **Do not suggest npm packages.** Only PXT extensions (added via
+  `pxt.json` `dependencies`) are supported.
+- **Do not use ES modules** (`import`/`export`). Use `namespace` blocks.
+- **Do not suggest MicroPython.** This project is TypeScript-only.
+- **Do not create files without updating `pxt.json`.** The file will be
+  silently ignored.
+- **Do not suggest the cloud compiler.** All builds use the local
+  compiler (`PXT_FORCE_LOCAL=1`).
