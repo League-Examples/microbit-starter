@@ -1,14 +1,14 @@
 ---
-id: "002"
-title: "Template Cleanup & Configuration"
+id: '002'
+title: Template Cleanup & Configuration
 status: done
 branch: sprint/002-template-cleanup-configuration
 use-cases:
-  - SUC-002-01
-  - SUC-002-02
-  - SUC-002-03
-  - SUC-002-04
-  - SUC-002-05
+- SUC-002-01
+- SUC-002-02
+- SUC-002-03
+- SUC-002-04
+- SUC-002-05
 ---
 <!-- CLASI: Before changing code or making plans, review the SE process in CLAUDE.md -->
 
