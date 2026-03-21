@@ -1,17 +1,5 @@
-//serial.writeLine("Starting tests");
-
-//irtest.testIPReceive();
-//irtest.testIPSend();
-//irtest.testRadioChannelSend();
-//irtest.testRadioChannelReceive();
-
-irtest.testSendNecCode();
-
-//irtest.testNextNecCode();
-
-//irtest.testPulseTiming();
-//irtest.testTimedBit();
-
-//irtest.testCalibrate();
-
-//irtest.testPulseIn();
+// Minimal test exerciser for the robot namespace.
+// Run via: npm run test
+robot.driveForward(500)
+serial.writeLine("test: driveForward completed")
+basic.showIcon(IconNames.Yes)
