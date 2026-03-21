@@ -1,7 +1,7 @@
 ---
 id: "004"
 title: "Demo Program & Tests"
-status: planning
+status: done
 branch: sprint/004-demo-program-tests
 use-cases:
   - SUC-004-01
