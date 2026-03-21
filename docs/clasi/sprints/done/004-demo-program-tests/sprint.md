@@ -1,13 +1,13 @@
 ---
-id: "004"
-title: "Demo Program & Tests"
+id: '004'
+title: Demo Program & Tests
 status: done
 branch: sprint/004-demo-program-tests
 use-cases:
-  - SUC-004-01
-  - SUC-004-02
-  - SUC-004-03
-  - SUC-004-04
+- SUC-004-01
+- SUC-004-02
+- SUC-004-03
+- SUC-004-04
 ---
 <!-- CLASI: Before changing code or making plans, review the SE process in CLAUDE.md -->
 
