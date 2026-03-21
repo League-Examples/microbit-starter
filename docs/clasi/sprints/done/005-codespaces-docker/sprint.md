@@ -1,13 +1,13 @@
 ---
-id: "005"
-title: "Codespaces & Docker"
+id: '005'
+title: Codespaces & Docker
 status: done
 branch: sprint/005-codespaces-docker
 use-cases:
-  - SUC-005-01
-  - SUC-005-02
-  - SUC-005-03
-  - SUC-005-04
+- SUC-005-01
+- SUC-005-02
+- SUC-005-03
+- SUC-005-04
 ---
 <!-- CLASI: Before changing code or making plans, review the SE process in CLAUDE.md -->
 
