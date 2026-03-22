@@ -1,6 +1,6 @@
 ---
-id: "009"
-title: "Fix Docker Image Name & Build Errors"
+id: 009
+title: Fix Docker Image Name & Build Errors
 status: done
 branch: sprint/009-fix-docker-image-name-build-errors
 use-cases: []

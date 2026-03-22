@@ -1,6 +1,6 @@
 {
   "name": "my-robot",
-  "version": "0.20260321.7",
+  "version": "0.20260321.8",
   "description": "Micro:bit robotics project",
   "scripts": {
     "setup": "node scripts/setup.js",
@@ -13,6 +13,6 @@
     "release": "bash scripts/release.sh"
   },
   "dependencies": {
-    "pxt-microbit": "^8.0.0"
+    "pxt-microbit": "^8.1.9"
   }
 }
