@@ -1,7 +1,7 @@
 ---
 id: "002"
 title: "Fix src/main.ts compile error and verify build"
-status: todo
+status: done
 use-cases: []
 depends-on: []
 github-issue: ""
@@ -17,7 +17,8 @@ todo: ""
 
 ## Acceptance Criteria
 
-- [ ] (Criterion)
+- [x] Replaced input.soundLevel() with input.temperature() in src/main.ts
+- [x] Build verified: PXT build succeeds, built/binary.hex produced (927KB)
 
 ## Testing
 
