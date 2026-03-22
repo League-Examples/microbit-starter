@@ -207,17 +207,39 @@ deploy POSTs the compiled `.hex` file to the bridge endpoint. Otherwise,
 
 ## Bridge Console
 
-The bridge console URL is stored in `pxt.json` under the `"bridge"`
-field (e.g., `http://localhost:5173/s/8f1db137`). To interact with
-connected micro:bits:
+The bridge config is in `pxt.json` under `"bridge"`:
 
-1. Read `pxt.json` to get the bridge URL.
-2. Fetch the URL to get API docs — it returns all endpoints with the
-   session key already embedded in the paths.
-3. **Always list devices and ask the stakeholder which one** before
-   deploying. Do not broadcast to all devices.
-4. Use the endpoints from the docs response to flash hex, read/send
-   serial, reset devices, etc.
+```json
+"bridge": {
+    "url": "http://localhost:5173/s/<session>",
+    "devices": {
+        "robot": "guvov",
+        "base": "c7141e"
+    }
+}
+```
+
+- `url` — Fetch this to get API docs with all endpoints and the session
+  key embedded in paths.
+- `devices` — Maps short names to device identifiers. Values can be
+  either a device name from the announcement protocol (e.g., `guvov`)
+  or the last 6 hex digits of the device serial number (e.g., `c7141e`).
+
+### Device Lookup
+
+When the stakeholder says "deploy to robot":
+
+1. Read `pxt.json` `bridge.devices` to resolve `robot` → `guvov`.
+2. Fetch the bridge URL to get API docs.
+3. `GET .../devices` to list connected devices.
+4. Match the value (`guvov`) against device names. If no name match,
+   match against the last 6 characters of device IDs (for serial
+   number references like `c7141e`).
+5. Use the matched device's full ID for targeted API calls.
+
+**Always list devices and ask the stakeholder which one** before
+deploying if the short name is not already specified. Do not broadcast
+to all devices.
 
 ### Device Announcement Protocol
 

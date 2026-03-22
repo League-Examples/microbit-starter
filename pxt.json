@@ -22,5 +22,12 @@
         "microbit"
     ],
     "preferredEditor": "tsprj",
-    "bridge": "http://localhost:5173/s/8f1db137"
+    "bridge": {
+        "url": "http://localhost:5173/s/8f1db137",
+        "devices": {
+            "robot": "guvov",
+            "bridge1": "gitev",
+            "base": "c7141e"
+        }
+    }
 }
