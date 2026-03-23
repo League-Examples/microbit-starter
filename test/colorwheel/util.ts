@@ -46,18 +46,23 @@ namespace app {
      * Classify color by HSV hue from the color sensor.
      * Red wraps around 0°, so it needs two ranges.
      *
-     * Measured hues from sensor at known positions:
-     *   Red=13, Orange=73, Green=135, Blue=219
-     *
-     * Returns color name: "Red", "Orange", "Green", "Blue", or "?"
+     * Hue ranges (measured from sensor):
+     *   Red:    350-20   (hue ~6-14)
+     *   Orange: 20-45    (hue ~35)
+     *   Yellow: 45-75    (hue ~60-73)
+     *   Green:  75-160   (hue ~100-135)
+     *   Blue:   160-210  (hue ~190-219)
+     *   Purple: 210-350  (hue ~229-254)
      */
     export function classifyByHue(): string {
         let h = colorsensor.hue()
         if (h < 0) return "?"
-        if (h >= 330 || h < 30) return "Red"
-        if (h >= 30 && h < 90) return "Orange"
-        if (h >= 90 && h < 170) return "Green"
-        if (h >= 170 && h < 330) return "Blue"
+        if (h >= 350 || h < 20) return "Red"
+        if (h >= 20 && h < 45) return "Orange"
+        if (h >= 45 && h < 75) return "Yellow"
+        if (h >= 75 && h < 160) return "Green"
+        if (h >= 160 && h < 210) return "Blue"
+        if (h >= 210 && h < 350) return "Purple"
         return "?"
     }
 }
