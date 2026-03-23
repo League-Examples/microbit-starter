@@ -33,7 +33,10 @@ remove_if_exists ".claude/rules"
 remove_if_exists ".claude/settings.json"
 remove_if_exists ".claude/settings.local.json"
 
-# 6. Keep .claude/skills/ (useful for students) — no action needed
+# 6. Delete .claude/skills/se/ (CLASI process skill — not for students)
+remove_if_exists ".claude/skills/se"
+
+# Keep .claude/skills/pxt/ and .claude/skills/static-typescript/ (useful for students)
 
 # 7. Strip the CLASI:START through CLASI:END block from CLAUDE.md
 if [ -f "CLAUDE.md" ]; then
