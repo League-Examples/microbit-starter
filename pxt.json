@@ -4,14 +4,17 @@
     "description": "Micro:bit robotics project",
     "dependencies": {
         "core": "*",
-        "radio": "*",
-        "pxt-nezha2": "github:elecfreaks/pxt-nezha2",
-        "pxt-PlanetX": "github:elecfreaks/pxt-PlanetX"
+        "pxt-nezha2": "github:elecfreaks/pxt-nezha2#v1.2.2"
     },
     "files": [
         "README.md",
         "src/announce.ts",
-        "src/colorsensor.ts"
+        "src/colorsensor.ts",
+        "src/planetx.ts",
+        "src/util.ts",
+        "src/hardware.ts",
+        "src/command.ts",
+        "src/stub.cpp"
     ],
     "testFiles": [
         "src/main.ts",

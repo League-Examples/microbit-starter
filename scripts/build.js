@@ -35,6 +35,11 @@ function main() {
   // V2 only — skip V1/DAL build path, use CODAL exclusively
   process.env.PXT_COMPILE_SWITCHES = "csv---mbcodal";
 
+  // Pass GitHub token for Docker builds to avoid rate limits
+  if (process.env.GITHUB_TOKEN && !process.env.GITHUB_ACCESS_TOKEN) {
+    process.env.GITHUB_ACCESS_TOKEN = process.env.GITHUB_TOKEN;
+  }
+
   // Check C++ / Docker precondition
   if (hasCppFiles()) {
     console.log("C++ files detected in pxt.json files array.");
@@ -47,10 +52,10 @@ function main() {
     console.log("Docker image pext/yotta found. [OK]");
   }
 
-  // Run pxt build
+  // Use "pxt test" to include testFiles (main.ts is the entry point)
   console.log("\n==> Building project...");
   try {
-    execSync("npx pxt build", { stdio: "inherit", cwd: ROOT });
+    execSync("npx pxt test", { stdio: "inherit", cwd: ROOT });
   } catch (err) {
     console.error("\nBuild failed.");
     process.exit(1);
