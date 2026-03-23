@@ -37,11 +37,9 @@ namespace app {
         }
     }
 
-    /** Read color sensor, classify, return label. */
+    /** Read color sensor, classify by hue, return color name. */
     export function classify(): string {
-        readChroma()
-        if (chromaR + chromaG + chromaB == 0) return "?"
-        return classifyChroma(chromaR, chromaG, chromaB, chromaI)
+        return classifyByHue()
     }
 
     /** Read PlanetX hue value (used in CAL). */

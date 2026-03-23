@@ -134,36 +134,52 @@ namespace colorsensor {
     }
 
     /**
-     * Compute hue (0-360) from current sensor reading.
-     * Returns -1 if no valid reading.
+     * Compute HSV from raw sensor RGB channels.
+     * H: 0-360 (hue), S: 0-1000 (saturation in milliunits),
+     * V: raw max channel value.
+     * Returns -1 for H if no valid reading.
      */
     //% block="color hue"
     export function hue(): number {
         let r = red()
         let g = green()
         let b = blue()
-        let c = clear()
-        if (c == 0) return -1
-
-        let avg = c / 3
-        let rn = Math.min(r * 255 / avg, 255)
-        let gn = Math.min(g * 255 / avg, 255)
-        let bn = Math.min(b * 255 / avg, 255)
-
-        let mx = Math.max(rn, Math.max(gn, bn))
-        let mn = Math.min(rn, Math.min(gn, bn))
+        let mx = Math.max(r, Math.max(g, b))
+        let mn = Math.min(r, Math.min(g, b))
         let delta = mx - mn
-        if (delta <= 0) return 0
+        if (mx == 0 || delta == 0) return -1
 
         let h = 0
-        if (mx == rn) {
-            h = 60 * ((gn - bn) / delta)
-            if (gn < bn) h += 360
-        } else if (mx == gn) {
-            h = 60 * ((bn - rn) / delta) + 120
+        if (mx == r) {
+            h = 60 * (g - b) / delta
+            if (h < 0) h += 360
+        } else if (mx == g) {
+            h = 60 * (b - r) / delta + 120
         } else {
-            h = 60 * ((rn - gn) / delta) + 240
+            h = 60 * (r - g) / delta + 240
         }
         return Math.round(h)
+    }
+
+    /**
+     * Saturation (0-1000 milliunits) from raw RGB.
+     */
+    //% block="color saturation"
+    export function saturation(): number {
+        let r = red()
+        let g = green()
+        let b = blue()
+        let mx = Math.max(r, Math.max(g, b))
+        if (mx == 0) return 0
+        let mn = Math.min(r, Math.min(g, b))
+        return Math.round((mx - mn) * 1000 / mx)
+    }
+
+    /**
+     * Value (brightness) — the max raw channel.
+     */
+    //% block="color value"
+    export function value(): number {
+        return Math.max(red(), Math.max(green(), blue()))
     }
 }

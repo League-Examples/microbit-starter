@@ -13,8 +13,7 @@
         "src/planetx.ts",
         "src/util.ts",
         "src/hardware.ts",
-        "src/command.ts",
-        "src/stub.cpp"
+        "src/command.ts"
     ],
     "testFiles": [
         "src/main.ts",

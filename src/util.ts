@@ -43,22 +43,21 @@ namespace app {
     }
 
     /**
-     * K-means nearest-centroid classifier for the 4 color zones.
-     * Takes normalized chromaticity (r, g, b in milliunits 0-1000)
-     * and normalized intensity i.
-     * Returns label "A" (blue), "B" (red), "C" (green), or "D" (orange).
+     * Classify color by HSV hue from the color sensor.
+     * Red wraps around 0°, so it needs two ranges.
+     *
+     * Measured hues from sensor at known positions:
+     *   Red=13, Orange=73, Green=135, Blue=219
+     *
+     * Returns color name: "Red", "Orange", "Green", "Blue", or "?"
      */
-    export function classifyChroma(r: number, g: number, b: number, i: number): string {
-        let d0 = (r - 97) * (r - 97) + (g - 303) * (g - 303) + (b - 600) * (b - 600) + (i - 930) * (i - 930)
-        let d1 = (r - 395) * (r - 395) + (g - 346) * (g - 346) + (b - 259) * (b - 259) + (i - 105) * (i - 105)
-        let d2 = (r - 143) * (r - 143) + (g - 574) * (g - 574) + (b - 283) * (b - 283) + (i - 756) * (i - 756)
-        let d3 = (r - 377) * (r - 377) + (g - 449) * (g - 449) + (b - 175) * (b - 175) + (i - 666) * (i - 666)
-
-        let minD = d0
-        let label = "A"
-        if (d1 < minD) { minD = d1; label = "B" }
-        if (d2 < minD) { minD = d2; label = "C" }
-        if (d3 < minD) { minD = d3; label = "D" }
-        return label
+    export function classifyByHue(): string {
+        let h = colorsensor.hue()
+        if (h < 0) return "?"
+        if (h >= 330 || h < 30) return "Red"
+        if (h >= 30 && h < 90) return "Orange"
+        if (h >= 90 && h < 170) return "Green"
+        if (h >= 170 && h < 330) return "Blue"
+        return "?"
     }
 }

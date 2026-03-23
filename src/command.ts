@@ -65,7 +65,11 @@ namespace app {
     }
 
     function doRead() {
-        serial.writeLine("POS:" + motorAbsAngle() + " " + classify())
+        let h = colorsensor.hue()
+        let s = colorsensor.saturation()
+        let v = colorsensor.value()
+        let color = classify()
+        serial.writeLine("POS:" + motorAbsAngle() + " H:" + h + " S:" + s + " V:" + v + " " + color)
     }
 
     function doCal() {
@@ -141,15 +145,6 @@ namespace app {
         basic.pause(300)
     }
 
-    // Label-to-color-name mapping (verified by camera)
-    function labelToName(lbl: string): string {
-        if (lbl == "A") return "Blue"
-        if (lbl == "B") return "Red"
-        if (lbl == "C") return "Orange"
-        if (lbl == "D") return "Green"
-        return "?"
-    }
-
     export function mapColors() {
         serial.writeLine("MAP:start")
         basic.showIcon(IconNames.Target)
@@ -220,10 +215,9 @@ namespace app {
             for (let i = 0; i < colorCount; i++) {
                 motorMoveTo(colorAngles[i])
                 basic.pause(500)
-                let lbl = classify()
-                let name = labelToName(lbl)
+                let name = classify()
                 colorNames.push(name)
-                serial.writeLine("MAP:" + name + "=" + colorAngles[i] + " (label " + lbl + ")")
+                serial.writeLine("MAP:" + name + "=" + colorAngles[i] + " H:" + colorsensor.hue())
             }
 
             // Sort by angle

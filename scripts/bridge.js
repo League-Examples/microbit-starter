@@ -162,8 +162,24 @@ const C = {
   cyan: "\x1b[36m", white: "\x1b[37m",
 };
 
-async function cmdDevices(config) {
+async function cmdDevices(config, json) {
   const devices = await listDevices(config.bridgeUrl);
+  if (json) {
+    const out = devices.map(dev => {
+      const short = dev.id ? dev.id.substring(16, 32) : null;
+      return {
+        id: dev.id,
+        short,
+        display: dev.id ? dev.id.substring(26, 32) : null,
+        name: config.deviceNames[short] || null,
+        announced: dev.name || null,
+        type: dev.type || null,
+        state: dev.state || null,
+      };
+    });
+    console.log(JSON.stringify(out));
+    return;
+  }
   if (devices.length === 0) {
     console.log("No devices connected to bridge.");
     return;
@@ -185,7 +201,7 @@ async function cmdDevices(config) {
   }
 }
 
-async function cmdSerial(config, ref, lineCount) {
+async function cmdSerial(config, ref, lineCount, json) {
   const dev = await resolveDevice(config.bridgeUrl, config.deviceNames, ref);
   if (!dev) { console.error(`Device "${ref}" not found`); process.exit(1); }
 
@@ -194,10 +210,14 @@ async function cmdSerial(config, ref, lineCount) {
   const result = await httpGet(`${parsed.origin}/api/bridge/session/${key}/serial/${dev.id}`);
   const lines = (result.lines || []).map(l => l.replace(/\r/g, "").trim()).filter(l => l);
   const show = lines.slice(-lineCount);
-  show.forEach(l => console.log(l));
+  if (json) {
+    console.log(JSON.stringify(show));
+  } else {
+    show.forEach(l => console.log(l));
+  }
 }
 
-async function cmdSend(config, ref, message) {
+async function cmdSend(config, ref, message, json) {
   const dev = await resolveDevice(config.bridgeUrl, config.deviceNames, ref);
   if (!dev) { console.error(`Device "${ref}" not found`); process.exit(1); }
 
@@ -208,10 +228,14 @@ async function cmdSend(config, ref, message) {
     "application/json",
     JSON.stringify({ data: message + "\n" })
   );
-  console.log(`Sent to ${ref}: ${JSON.stringify(message)}`);
+  if (json) {
+    console.log(JSON.stringify({ ok: true, device: ref, message }));
+  } else {
+    console.log(`Sent to ${ref}: ${JSON.stringify(message)}`);
+  }
 }
 
-async function cmdFlash(config, ref, hexFile) {
+async function cmdFlash(config, ref, hexFile, json) {
   const hexPath = hexFile || path.join(ROOT, "built", "binary.hex");
   if (!fs.existsSync(hexPath)) {
     console.error(`Hex file not found: ${hexPath}`);
@@ -226,8 +250,12 @@ async function cmdFlash(config, ref, hexFile) {
       `${parsed.origin}/api/bridge/hex/${key}`,
       path.basename(hexPath), hexData
     );
-    console.log(`Broadcast flash: ${hexData.length} bytes`);
-    console.log(JSON.stringify(result));
+    if (json) {
+      console.log(JSON.stringify({ ok: true, broadcast: true, size: hexData.length, result }));
+    } else {
+      console.log(`Broadcast flash: ${hexData.length} bytes`);
+      console.log(JSON.stringify(result));
+    }
     return;
   }
 
@@ -238,11 +266,15 @@ async function cmdFlash(config, ref, hexFile) {
     `${parsed.origin}/api/bridge/hex/${key}/${dev.id}`,
     path.basename(hexPath), hexData
   );
-  console.log(`Flashed ${hexData.length} bytes to ${ref}`);
-  console.log(JSON.stringify(result));
+  if (json) {
+    console.log(JSON.stringify({ ok: true, device: ref, size: hexData.length, result }));
+  } else {
+    console.log(`Flashed ${hexData.length} bytes to ${ref}`);
+    console.log(JSON.stringify(result));
+  }
 }
 
-async function cmdReset(config, ref) {
+async function cmdReset(config, ref, json) {
   const dev = await resolveDevice(config.bridgeUrl, config.deviceNames, ref);
   if (!dev) { console.error(`Device "${ref}" not found`); process.exit(1); }
 
@@ -252,7 +284,11 @@ async function cmdReset(config, ref) {
     `${parsed.origin}/api/bridge/session/${key}/reset/${dev.id}`,
     "application/json", "{}"
   );
-  console.log(`Reset ${ref}`);
+  if (json) {
+    console.log(JSON.stringify({ ok: true, device: ref }));
+  } else {
+    console.log(`Reset ${ref}`);
+  }
 }
 
 async function cmdWatch(config, ref, filterPrefix) {
@@ -283,15 +319,17 @@ async function cmdWatch(config, ref, filterPrefix) {
   }, 500);
 }
 
-async function cmdDocs(config) {
+async function cmdDocs(config, json) {
   const docs = await getBridgeDocs(config.bridgeUrl);
-  console.log(JSON.stringify(docs, null, 2));
+  console.log(JSON.stringify(docs, json ? undefined : null, json ? undefined : 2));
 }
 
 // ── Main ─────────────────────────────────────────────────
 
 async function main() {
-  const args = process.argv.slice(2);
+  const rawArgs = process.argv.slice(2);
+  const json = rawArgs.includes("--json");
+  const args = rawArgs.filter(a => a !== "--json");
   const cmd = args[0];
 
   if (!cmd || cmd === "help" || cmd === "--help") {
@@ -307,6 +345,10 @@ Usage:
   bridge watch <device> [prefix]     Poll serial continuously (optional prefix filter)
   bridge docs                        Show raw bridge API docs
 
+Options:
+  --json    Output as JSON (for programmatic / agent use).
+            Works with: devices, serial, send, flash, reset, docs.
+
 <device>: name from pxt.json, display serial (6 chars), or short serial (16 chars)
 `);
     return;
@@ -316,25 +358,25 @@ Usage:
 
   switch (cmd) {
     case "devices":
-      await cmdDevices(config);
+      await cmdDevices(config, json);
       break;
     case "serial":
-      await cmdSerial(config, args[1], parseInt(args[2]) || 20);
+      await cmdSerial(config, args[1], parseInt(args[2]) || 20, json);
       break;
     case "send":
-      await cmdSend(config, args[1], args.slice(2).join(" "));
+      await cmdSend(config, args[1], args.slice(2).join(" "), json);
       break;
     case "flash":
-      await cmdFlash(config, args[1], args[2]);
+      await cmdFlash(config, args[1], args[2], json);
       break;
     case "reset":
-      await cmdReset(config, args[1]);
+      await cmdReset(config, args[1], json);
       break;
     case "watch":
       await cmdWatch(config, args[1], args[2]);
       break;
     case "docs":
-      await cmdDocs(config);
+      await cmdDocs(config, json);
       break;
     default:
       console.error(`Unknown command: ${cmd}`);
